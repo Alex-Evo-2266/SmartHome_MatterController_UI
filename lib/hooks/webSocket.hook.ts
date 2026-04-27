@@ -13,6 +13,10 @@ export interface MessageCallback {
   callback: (data: string) => void; // Функция callback, которая принимает любые данные
 }
 
+function isSocketData(data: unknown): data is ISocketData{
+  return (typeof data === "object" && data !== null && "type" in data && "data" in data)
+}
+
 export const useSocket = (callbacks: MessageCallback[] = []) => {
   const socket = useRef<WebSocket | null>(null);
   const reconnectTimer = useRef<number | null>(null);
@@ -35,10 +39,17 @@ export const useSocket = (callbacks: MessageCallback[] = []) => {
 
     socket.current.onmessage = (e) => {
       try {
-        const data: ISocketData = JSON.parse(e.data);
+        const data: unknown = JSON.parse(e.data);
         console.log("p9",data)
         callbacks.forEach((cb) => {
-          if (cb.messageType === data.type) cb.callback(data.data);
+          if(isSocketData(data) && (cb.messageType === data.type)){
+            cb.callback(data.data);
+          }
+          else{
+            if (cb.messageType === "") {
+              cb.callback(JSON.stringify(data))
+            }
+          }
         });
       } catch (err) {
         console.error("WS message parse error:", err);

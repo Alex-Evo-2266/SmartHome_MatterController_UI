@@ -16,7 +16,7 @@ export default function Page(){
     },[])
 
     const colbacks = useMemo(()=>[
-            {messageType: "message_service", callback: setMqttMessage},
+            {messageType: "", callback: setMqttMessage},
     ],[setMqttMessage])
 
     const {connectSocket, closeSocket, publish} = useSocket(colbacks)
