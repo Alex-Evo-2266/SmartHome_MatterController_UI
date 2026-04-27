@@ -2,16 +2,16 @@
 
 import { useSocket } from "@/lib/hooks/webSocket.hook"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Button } from 'alex-evo-sh-ui-kit'
 import PairModal from "./DevicesModal"
+import { FAB } from "alex-evo-sh-ui-kit"
 
 export default function Page(){ 
     
     const [message, setMessage] = useState<Record<string, unknown>>({})
-    const [pairModal, setPairModal] = useState<boolean>(false)
 
     const setMqttMessage = useCallback((data: string) => {
         const parseData = JSON.parse(data)
+        console.log(parseData)
         setMessage(parseData)
     },[])
 
@@ -19,7 +19,7 @@ export default function Page(){
             {messageType: "message_service", callback: setMqttMessage},
     ],[setMqttMessage])
 
-    const {connectSocket, closeSocket} = useSocket(colbacks)
+    const {connectSocket, closeSocket, publish} = useSocket(colbacks)
 
     useEffect(() => {
           console.log('MessageService connected')
@@ -31,15 +31,16 @@ export default function Page(){
     return (
         <div>
             <div>
-            {
-                pairModal?
-                <PairModal onHide={()=>setPairModal(false)}/>:
-                <Button onClick={()=>setPairModal(true)}>pair</Button>
-            }
+                <PairModal publish={publish}/>
             </div>
             <table>
 
             </table>
+            <FAB onClick={()=>publish(JSON.stringify({
+                type: "command",
+                topic: "devices/get",
+                message: { data: "reload" }
+            }))}>reload</FAB>
         </div>
     )
 }

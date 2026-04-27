@@ -1,24 +1,16 @@
 "use client"
 
-import { useSocket } from "@/lib/hooks/webSocket.hook"
-import { BaseDialog, TextField } from "alex-evo-sh-ui-kit"
-import { useCallback, useEffect, useState } from "react"
+import { BaseActionCard, Button, ContentBox, Panel, TextField, Typography } from "alex-evo-sh-ui-kit"
+import { useCallback, useState } from "react"
 
 // export const dynamic = "force-dynamic"
 
 interface PairModalProps{
-    onHide: ()=>void
+    publish: (data: string)=>void
 }
 
-export default function PairModal({onHide}:PairModalProps) {
+export default function PairModal({publish}:PairModalProps) {
     const [pairCode, setPairCode] = useState("")
-
-    const { connectSocket, closeSocket, publish } = useSocket([])
-
-    useEffect(() => {
-        connectSocket()
-        return () => closeSocket()
-    }, [connectSocket, closeSocket])
 
     const pair = useCallback(() => {
         publish(JSON.stringify({
@@ -34,17 +26,17 @@ export default function PairModal({onHide}:PairModalProps) {
     }
 
     return (
-        <BaseDialog
-            header="pair device"
-            onHide={onHide}
-            onSuccess={pair}
-        >
+        <ContentBox label="Pair device">
+            <Typography type="title">Pair device</Typography>
             <TextField
                 placeholder="paircode"
                 value={pairCode}
                 border
                 onChange={change}
             />
-        </BaseDialog>
+            <BaseActionCard>
+                <Button onClick={pair}>Pair</Button>
+            </BaseActionCard>
+        </ContentBox>
     )
 }
