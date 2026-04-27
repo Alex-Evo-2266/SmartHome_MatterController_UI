@@ -12,10 +12,11 @@ export default function Page(){
     const setMqttMessage = useCallback((data: string) => {
         const parseData: unknown = JSON.parse(data)
         console.log(parseData)
-        if(typeof parseData === "object" && parseData !== null && "message" in parseData && typeof parseData.message === "string"){
+        if(typeof parseData === "object" && parseData !== null && "topik" in parseData && parseData.topik === "matter/devices/details" && "message" in parseData && typeof parseData.message === "string"){
             const newData = JSON.parse(parseData.message)
             console.log(newData.data)
-            setDevices(newData.data)
+            if(Array.isArray(newData.data))
+                setDevices(newData.data)
         }
     },[])
 
