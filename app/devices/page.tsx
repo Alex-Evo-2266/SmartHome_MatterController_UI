@@ -7,12 +7,12 @@ import { FAB } from "alex-evo-sh-ui-kit"
 
 export default function Page(){ 
     
-    const [message, setMessage] = useState<Record<string, unknown>>({})
-
     const setMqttMessage = useCallback((data: string) => {
-        const parseData = JSON.parse(data)
+        const parseData: unknown = JSON.parse(data)
         console.log(parseData)
-        setMessage(parseData)
+        if(typeof parseData === "object" && parseData !== null && "message" in parseData){
+            console.log(parseData.message)
+        }
     },[])
 
     const colbacks = useMemo(()=>[
@@ -27,7 +27,6 @@ export default function Page(){
           return () => closeSocket(); // закрывать при размонтировании
       }, [connectSocket, closeSocket]);
   
-    console.log(message)
     return (
         <div>
             <div>
