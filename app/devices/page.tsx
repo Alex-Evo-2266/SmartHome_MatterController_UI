@@ -4,10 +4,12 @@ import { useSocket } from "@/lib/hooks/webSocket.hook"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import PairModal from "./DevicesModal"
 import { FAB } from "alex-evo-sh-ui-kit"
+import { DeviceCard } from "./DeviceCard"
+import { MatterDevice } from "@/lib/devicesDataType/types"
 
 export default function Page(){ 
 
-    const [devices, setDevices] = useState<Record<any,any>[]>([])
+    const [devices, setDevices] = useState<MatterDevice[]>([])
     
     const setMqttMessage = useCallback((data: string) => {
         const parseData: unknown = JSON.parse(data)
@@ -39,7 +41,11 @@ export default function Page(){
             </div>
             <table>
             {
-                devices.map((item)=>(<p>{item.deviceData.basicInformation.productLabel}</p>))
+                devices.map((item)=>(
+                <DeviceCard device={item} publish={publish}>
+                    
+                </DeviceCard>
+                ))
             }
             </table>
             <FAB onClick={()=>publish(JSON.stringify({

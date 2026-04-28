@@ -26,7 +26,7 @@ export default function PairModal({publish}:PairModalProps) {
     }
 
     return (
-        <ContentBox label="Pair device">
+        <ContentBox collapsible defaultVisible={false} label="Pair device">
             <Typography type="title">Pair device</Typography>
             <TextField
                 placeholder="paircode"
